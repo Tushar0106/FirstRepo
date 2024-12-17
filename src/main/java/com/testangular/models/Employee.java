@@ -25,18 +25,18 @@ public class Employee {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "pword")
-    private String pword;
+    @Column(name = "salary")
+    private String salary;
 
     public Employee() {
     }
 
-    public Employee(String empname, int empID, String address, String email, String pword) {
+    public Employee(String empname, int empID, String address, String email, String salary) {
         this.empname = empname;
         this.empID = empID;
         this.address = address;
         this.email = email;
-        this.pword = pword;
+        this.salary = salary;
     }
     
     public int getEmpID() {
@@ -71,12 +71,12 @@ public class Employee {
 		this.email = email;
 	}
 
-	public String getPword() {
-		return pword;
+	public String getSalary() {
+		return salary;
 	}
 
-	public void setPword(String pword) {
-		this.pword = pword;
+	public void setSalary(String salary) {
+		this.salary = salary;
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class Employee {
                 ", empname='" + empname + '\'' +
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +
-                ", pword='" + pword + '\'' +
+                ", salary='" + salary + '\'' +
                 '}';
     }
 }

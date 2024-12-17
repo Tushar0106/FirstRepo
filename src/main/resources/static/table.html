@@ -19,6 +19,15 @@
 	<div ng-include="'header.html'"></div>
 	<br>
 	<div class="container" ng-controller="empListController">
+		<div class="row">
+			<div class="col"></div>
+			<div class="col">
+				<input class="form-control" type="text" ng-model="search"
+					placeholder="Search">
+			</div>
+		</div>
+		<br>
+
 		<table class="table">
 			<thead class="thead-dark">
 				<tr>
@@ -26,20 +35,20 @@
 					<th scope="col">Employee Name</th>
 					<th scope="col">Email</th>
 					<th scope="col">Address</th>
-					<th scope="col">Password</th>
+					<th scope="col">Salary</th>
 					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="employee in employees">
+				<tr ng-repeat="employee in employees | filter:search">
 					<th scope="row">{{employee.empID}}</th>
 					<td>{{employee.empname}}</td>
 					<td>{{employee.email}}</td>
 					<td>{{employee.address}}</td>
-					<td>{{employee.pword}}</td>
+					<td>{{employee.salary}}</td>
 					<td>
 						<button class="btn btn-primary rounded-pill" ng-click="redirectToUpdate(employee.empID)">Edit</button>
-					
+
 						<button class="btn btn-danger rounded-pill" ng-click="deleteEmp(employee.empID)">Delete</button>
 					</td>
 				</tr>
