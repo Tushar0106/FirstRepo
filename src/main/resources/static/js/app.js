@@ -14,8 +14,37 @@ app.controller('myCtrl', function($scope) {
 	}
 });
 
-/* Insert new employee */
+/* Insert new employee with profile image */
 app.controller('formController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+    $scope.employee = {}; // Initialize employee object to bind form data
+
+    $scope.submitForm = function() {
+        var fileInput = document.getElementById('file'); // Get file input element
+        var file = fileInput.files[0]; // Get the selected file
+
+        var formData = new FormData(); // Use FormData for file + data upload
+        formData.append('file', file); // Append the file
+        formData.append('empname', $scope.employee.empname);
+        formData.append('address', $scope.employee.address);
+        formData.append('email', $scope.employee.email);
+        formData.append('salary', $scope.employee.salary);
+
+        // Send a POST request to the server with form and file data
+		$http.post('/upload', formData, {
+			headers: { 'Content-Type': undefined }, // Let the browser handle multipart/form-data
+			transformRequest: angular.identity      // Prevent AngularJS from serializing FormData
+		}).then(function(response) {
+			console.log('Success:', response);
+		}, function(error) {
+			console.error('Error:', error);
+		});
+       	$window.location.href = '/table';
+    };
+}]);
+
+
+/* Insert new employee */
+app.controller('formController2', ['$scope', '$http', '$window', function($scope, $http, $window) {
 	$scope.employee = {}; // Initialize employee object to bind form data
 
 	$scope.submitForm = function() {

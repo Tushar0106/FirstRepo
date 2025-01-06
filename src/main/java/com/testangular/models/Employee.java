@@ -7,39 +7,43 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "employee")
 public class Employee {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "empID")
-    private int empID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "empID")
+	private int empID;
 
-    @Column(name = "empname")
-    private String empname;
+	@Column(name = "empname")
+	private String empname;
 
-    @Column(name = "address")
-    private String address;
+	@Column(name = "address")
+	private String address;
 
-    @Column(name = "email")
-    private String email;
+	@Column(name = "email")
+	private String email;
 
-    @Column(name = "salary")
-    private String salary;
+	@Column(name = "salary")
+	private String salary;
 
-    public Employee() {
-    }
+	@Column(name = "filename")
+	private String filename;
 
-    public Employee(String empname, int empID, String address, String email, String salary) {
-        this.empname = empname;
-        this.empID = empID;
-        this.address = address;
-        this.email = email;
-        this.salary = salary;
-    }
-    
-    public int getEmpID() {
+	public Employee() {
+	}
+
+	public Employee(int empID, String empname, String address, String email, String salary, String filename) {
+		super();
+		this.empID = empID;
+		this.empname = empname;
+		this.address = address;
+		this.email = email;
+		this.salary = salary;
+		this.filename = filename;
+	}
+
+	public int getEmpID() {
 		return empID;
 	}
 
@@ -79,14 +83,18 @@ public class Employee {
 		this.salary = salary;
 	}
 
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
 	@Override
-    public String toString() {
-        return "Employee{" +
-                "empID=" + empID +
-                ", empname='" + empname + '\'' +
-                ", address='" + address + '\'' +
-                ", email='" + email + '\'' +
-                ", salary='" + salary + '\'' +
-                '}';
-    }
+	public String toString() {
+		return "Employee [empID=" + empID + ", empname=" + empname + ", address=" + address + ", email=" + email
+				+ ", salary=" + salary + ", filename=" + filename + "]";
+	}
+
 }
