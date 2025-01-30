@@ -167,44 +167,65 @@ public class EmployeeController {
 		}	
 	}
 	
-	/* Add new employee with file */
+	/* Update employee with file */
 	@PutMapping("/update")
-    public ResponseEntity<Map<String, String>> updateProfileImage(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("empname") String empname,
-            @RequestParam("address") String address,
-            @RequestParam("email") String email,
-            @RequestParam("salary") String salary) {
+	public ResponseEntity<Map<String, String>> updateProfileImage(
+	        @RequestParam("empID") Integer empID,
+	        @RequestParam("empname") String empname,
+	        @RequestParam("address") String address,
+	        @RequestParam("email") String email,
+	        @RequestParam("salary") String salary,
+	        @RequestParam(value = "file", required = false) MultipartFile file) {
 
-        Map<String, String> response = new HashMap<>();
-        try {
-            // Save employee data
-            Employee employee = new Employee();
-            employee.setEmpname(empname);
-            employee.setAddress(address);
-            employee.setEmail(email);
-            employee.setSalary(salary);
-            //employee.setFilename(originalFilename);
+	    Map<String, String> response = new HashMap<>();
+	    try {
+	        // Fetch the existing employee by ID
+	        Optional<Employee> optionalEmployee = empService.getEmpById(empID);
+	        
+	        if (!optionalEmployee.isPresent()) {
+	            response.put("error", "Employee not found");
+	            return ResponseEntity.status(404).body(response);
+	        }
 
-            if (file != null && !file.isEmpty()) {
-                String originalFilename = file.getOriginalFilename();
-                String filePath = UPLOAD_DIR + originalFilename;
-                file.transferTo(new File(filePath));
-                employee.setFilename(originalFilename); // Update filename
-            }
-            
-            empService.saveAndUpdateEmployee(employee);
+	        Employee employee = optionalEmployee.get();
 
-            response.put("message", "File uploaded successfully");
-            response.put("filename", employee.getFilename());
-            return ResponseEntity.ok(response);
+	        // Update employee details
+	        employee.setEmpname(empname);
+	        employee.setAddress(address);
+	        employee.setEmail(email);
+	        employee.setSalary(salary);
 
-        } catch (IOException e) {
-            response.put("error", "File upload failed");
-            logger.error("Unable to upload file "+e);
-            return ResponseEntity.status(500).body(response);
-        }
-    }
+	        // Handle file update only if a new file is selected
+	        if (file != null && !file.isEmpty()) {
+	            // Delete old file if it exists
+	            if (employee.getFilename() != null && !employee.getFilename().isEmpty()) {
+	                File oldFile = new File(UPLOAD_DIR + employee.getFilename());
+	                if (oldFile.exists()) {
+	                    oldFile.delete();
+	                }
+	            }
+
+	            // Save new file
+	            String originalFilename = file.getOriginalFilename();
+	            String filePath = UPLOAD_DIR + originalFilename;
+	            file.transferTo(new File(filePath));
+	            employee.setFilename(originalFilename);
+	        }
+
+	        empService.saveAndUpdateEmployee(employee);
+
+	        response.put("message", "Employee updated successfully");
+	        response.put("filename", employee.getFilename());
+	        return ResponseEntity.ok(response);
+
+	    } catch (IOException e) {
+	        response.put("error", "File upload failed");
+	        logger.error("Unable to upload file " + e);
+	        return ResponseEntity.status(500).body(response);
+	    }
+	}
+
+
 	
 	@DeleteMapping("/deleteEmp/{empID}")
 	public ResponseEntity<?> deleteEmp(@PathVariable Integer empID) {

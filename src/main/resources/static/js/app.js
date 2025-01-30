@@ -120,31 +120,31 @@ app.controller('updateController', ['$scope', '$http', '$window', function($scop
 	// New update employee with file
 	// Function to update employee details
 	$scope.updateEmployee = function() {
-		let formData = new FormData();
-		formData.append("empID", $scope.employee.empID);
-		formData.append("empname", $scope.employee.empname);
-		formData.append("email", $scope.employee.email);
-		formData.append("address", $scope.employee.address);
-		formData.append("salary", $scope.employee.salary);
+	    let formData = new FormData();
+	    formData.append("empID", $scope.employee.empID); // Ensure empID is sent
+	    formData.append("empname", $scope.employee.empname);
+	    formData.append("email", $scope.employee.email);
+	    formData.append("address", $scope.employee.address);
+	    formData.append("salary", $scope.employee.salary);
 
-		// Check if file is selected
-		let fileInput = document.getElementById("file");
-		if (fileInput.files.length > 0) {
-			formData.append("file", fileInput.files[0]);
-		}
+	    // Check if file is selected
+	    let fileInput = document.getElementById("file");
+	    if (fileInput.files.length > 0) {
+	        formData.append("file", fileInput.files[0]);
+	    }
 
-		// Send a POST request to the server with form and file data
-		$http.put('/upload', formData, {
-			headers: { 'Content-Type': undefined }, // Let the browser handle multipart/form-data
-			transformRequest: angular.identity      // Prevent AngularJS from serializing FormData
-		}).then(function(response) {
-			console.log('Success:', response);
-			$window.location.href = '/table';
-		}, function(error) {
-			console.error('Error:', error);
-		});
-		
+	    // Send a PUT request to the server with form and file data
+	    $http.put('/update', formData, {
+	        headers: { 'Content-Type': undefined },
+	        transformRequest: angular.identity
+	    }).then(function(response) {
+	        console.log('Success:', response);
+	        $window.location.href = '/table';
+	    }, function(error) {
+	        console.error('Error:', error);
+	    });
 	};
+
 }]);
 
 
