@@ -36,6 +36,8 @@
 					<th scope="col">Email</th>
 					<th scope="col">Address</th>
 					<th scope="col">Salary</th>
+					<th scope="col">File</th>
+					<!-- <th>img</th> -->
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -46,6 +48,9 @@
 					<td>{{employee.email}}</td>
 					<td>{{employee.address}}</td>
 					<td>{{employee.salary}}</td>
+					<!-- <td>{{employee.filename}}</td> -->
+					<td><img ng-src="/uploads/{{employee.filename}}" ng-alt="{{employee.filename}}" width="100"></td>
+					
 					<td>
 						<button class="btn btn-primary rounded-pill" ng-click="redirectToUpdate(employee.empID)">Edit</button>
 

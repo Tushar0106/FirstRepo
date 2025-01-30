@@ -2,6 +2,9 @@ package com.testangular.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +35,7 @@ import com.testangular.services.EmployeeServices;
 public class EmployeeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
-	private static final String UPLOAD_DIR = "C:/uploads/";
+	private static final String UPLOAD_DIR = "C:/SpringBoot/TestAngular/src/main/resources/static/uploads/";
 	
     @Autowired
     EmployeeServices empService;
@@ -83,11 +86,12 @@ public class EmployeeController {
             File uploadDir = new File(UPLOAD_DIR);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
+                System.out.println("New folder created!!"+uploadDir.getAbsolutePath());
             }
 
             // Generate file path
-            String originalFilename = file.getOriginalFilename();
-            String filePath = UPLOAD_DIR + originalFilename;
+            String originalFileName = file.getOriginalFilename();
+            String filePath = UPLOAD_DIR + originalFileName;
 
             // Save file locally
             file.transferTo(new File(filePath));
@@ -98,12 +102,12 @@ public class EmployeeController {
             employee.setAddress(address);
             employee.setEmail(email);
             employee.setSalary(salary);
-            employee.setFilename(originalFilename);
+            employee.setFilename(originalFileName);
 
             empService.saveAndUpdateEmployee(employee);
 
             response.put("message", "File uploaded successfully");
-            response.put("filename", originalFilename);
+            response.put("filename", originalFileName);
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
@@ -162,6 +166,45 @@ public class EmployeeController {
 			return new ResponseEntity<>("Failed to update employee: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}	
 	}
+	
+	/* Add new employee with file */
+	@PutMapping("/update")
+    public ResponseEntity<Map<String, String>> updateProfileImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("empname") String empname,
+            @RequestParam("address") String address,
+            @RequestParam("email") String email,
+            @RequestParam("salary") String salary) {
+
+        Map<String, String> response = new HashMap<>();
+        try {
+            // Save employee data
+            Employee employee = new Employee();
+            employee.setEmpname(empname);
+            employee.setAddress(address);
+            employee.setEmail(email);
+            employee.setSalary(salary);
+            //employee.setFilename(originalFilename);
+
+            if (file != null && !file.isEmpty()) {
+                String originalFilename = file.getOriginalFilename();
+                String filePath = UPLOAD_DIR + originalFilename;
+                file.transferTo(new File(filePath));
+                employee.setFilename(originalFilename); // Update filename
+            }
+            
+            empService.saveAndUpdateEmployee(employee);
+
+            response.put("message", "File uploaded successfully");
+            response.put("filename", employee.getFilename());
+            return ResponseEntity.ok(response);
+
+        } catch (IOException e) {
+            response.put("error", "File upload failed");
+            logger.error("Unable to upload file "+e);
+            return ResponseEntity.status(500).body(response);
+        }
+    }
 	
 	@DeleteMapping("/deleteEmp/{empID}")
 	public ResponseEntity<?> deleteEmp(@PathVariable Integer empID) {
