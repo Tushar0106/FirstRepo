@@ -35,7 +35,7 @@ import com.testangular.services.EmployeeServices;
 public class EmployeeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
-	private static final String UPLOAD_DIR = "C:/SpringBoot/TestAngular/src/main/resources/static/uploads/";
+	private static final String UPLOAD_DIR = "C:/Uploads/";
 	
     @Autowired
     EmployeeServices empService;
@@ -225,12 +225,31 @@ public class EmployeeController {
 	    }
 	}
 
-
-	
 	@DeleteMapping("/deleteEmp/{empID}")
 	public ResponseEntity<?> deleteEmp(@PathVariable Integer empID) {
-		empService.deleteEmpById(empID);
-		return new ResponseEntity<>(HttpStatus.OK);
+	    Optional<Employee> optionalEmployee = empService.getEmpById(empID);
+	    Employee employee = optionalEmployee.get();
+
+	    // Delete associated file if it exists
+	    if (employee.getFilename() != null && !employee.getFilename().isEmpty()) {
+	        File file = new File(UPLOAD_DIR + employee.getFilename());
+	        if (file.exists()) {
+	           file.delete();
+	        }
+	    }
+
+	    // Delete employee record from database
+	    empService.deleteEmpById(empID);
+
+	    return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+	
+	
+//	@DeleteMapping("/deleteEmp/{empID}")
+//	public ResponseEntity<?> deleteEmp(@PathVariable Integer empID) {
+//		empService.deleteEmpById(empID);
+//		return new ResponseEntity<>(HttpStatus.OK);
+//	}
 	
 }

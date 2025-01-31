@@ -35,10 +35,10 @@ app.controller('formController', ['$scope', '$http', '$window', function($scope,
 			transformRequest: angular.identity      // Prevent AngularJS from serializing FormData
 		}).then(function(response) {
 			console.log('Success:', response);
+			$window.location.href = '/table';
 		}, function(error) {
 			console.error('Error:', error);
 		});
-		$window.location.href = '/table';
 	};
 }]);
 
